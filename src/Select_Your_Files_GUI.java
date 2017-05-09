@@ -56,7 +56,7 @@ public class Select_Your_Files_GUI extends JFrame implements ActionListener {
 		SpringLayout sl_contentPane = new SpringLayout();
 		contentPane.setLayout(sl_contentPane);
 		contentPane.setBackground(new Color(47, 65, 114));
-		contentPane.setName("Choose your file");
+		setTitle("Choose Your Files");
 		
 		Font myFont = new Font("Calibri", Font.PLAIN, 20);
 		Font myFontForHeader = new Font("Calibri", Font.PLAIN, 24);

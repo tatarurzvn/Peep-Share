@@ -29,6 +29,7 @@ public class Accept_pop_up_GUI extends JDialog implements ActionListener{
 		
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setVisible(true);
+		setTitle("Connection incoming...");
 				
 		setBounds(100, 100, 450, 289);
 		SpringLayout springLayout = new SpringLayout();
