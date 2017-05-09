@@ -71,6 +71,7 @@ public class Application_Starter_GUI implements ActionListener, ListSelectionLis
 	 */
 	private void initialize() {
 		frmPeepShare = new JFrame();
+		frmPeepShare.setResizable(false);
 		frmPeepShare.setTitle("Peep Share");
 		frmPeepShare.setBounds(100, 100, 450, 300);
 		frmPeepShare.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

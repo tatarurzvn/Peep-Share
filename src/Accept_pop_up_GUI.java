@@ -27,6 +27,7 @@ public class Accept_pop_up_GUI extends JDialog implements ActionListener{
 		accepted = false; 
 		btnClicked = false; 
 		
+		setResizable(false);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		setVisible(true);
 		setTitle("Connection incoming...");
