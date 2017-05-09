@@ -44,7 +44,7 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 		this.output = output;
 		this.input = input; 
 		
-		setTitle("Choose your directory");
+		setTitle("Choose Your Directory");
 		
 		fileChooser = new JFileChooser();
 		fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
