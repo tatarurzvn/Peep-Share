@@ -44,6 +44,7 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 		this.output = output;
 		this.input = input; 
 		
+		setResizable(false);
 		setTitle("Choose Your Directory");
 		
 		fileChooser = new JFileChooser();
