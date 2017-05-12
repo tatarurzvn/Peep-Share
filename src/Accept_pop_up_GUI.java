@@ -1,22 +1,17 @@
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-
 import javax.swing.SpringLayout;
 import javax.swing.JLabel;
 
 public class Accept_pop_up_GUI extends JDialog implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;
-	
-	private JPanel buttonPane;
 	private JButton btnDecline;
 	private JButton btnAccept;
 	
@@ -37,18 +32,10 @@ public class Accept_pop_up_GUI extends JDialog implements ActionListener{
 		getContentPane().setLayout(springLayout);
 		getContentPane().setBackground(new Color(47, 65, 114));
 		
-		Font myFont = new Font("Calibri", Font.PLAIN, 20);		
-		{
-			buttonPane = new JPanel();
-			springLayout.putConstraint(SpringLayout.NORTH, buttonPane, 251, SpringLayout.NORTH, getContentPane());
-			springLayout.putConstraint(SpringLayout.WEST, buttonPane, 0, SpringLayout.WEST, getContentPane());
-			springLayout.putConstraint(SpringLayout.EAST, buttonPane, 434, SpringLayout.WEST, getContentPane());
-			buttonPane.setLayout(new FlowLayout(FlowLayout.RIGHT));
-			getContentPane().add(buttonPane);
-		}
+		Font myFont = new Font("Calibri", Font.PLAIN, 20);
 		{
 			btnDecline = new JButton("Decline");
-			springLayout.putConstraint(SpringLayout.SOUTH, btnDecline, 0, SpringLayout.NORTH, buttonPane);
+			springLayout.putConstraint(SpringLayout.SOUTH, btnDecline, -9, SpringLayout.SOUTH, getContentPane());
 			springLayout.putConstraint(SpringLayout.EAST, btnDecline, -10, SpringLayout.EAST, getContentPane());
 			getContentPane().add(btnDecline);
 			btnDecline.setFont(myFont);
