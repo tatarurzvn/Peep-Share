@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
@@ -102,7 +103,6 @@ public class Application_Starter_GUI implements ActionListener, ListSelectionLis
 		textField.setBackground(new Color(6, 20, 57));
 		textField.setForeground(new Color(215, 255, 243));
 		textField.setFont(myFont);
-		textField.setText("192.168.0.112"); // to delete
 		
 		JLabel lblEnterTheIp = new JLabel("Enter the IP below");
 		springLayout.putConstraint(SpringLayout.NORTH, lblEnterTheIp, 34, SpringLayout.NORTH, frmPeepShare.getContentPane());
@@ -130,7 +130,13 @@ public class Application_Starter_GUI implements ActionListener, ListSelectionLis
 		ipAddresses = new DefaultListModel<String>();		
 		for (InetAddress addr : addrList){
 			ipAddresses.addElement(addr.getHostAddress() + "-" + addr.getHostName());
-		}		
+		}
+		try {
+			ipAddresses.removeElement(InetAddress.getLocalHost().getHostAddress()+ "-" + InetAddress.getLocalHost().getHostName());
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		list = new JList<String>(ipAddresses);
 		springLayout.putConstraint(SpringLayout.NORTH, list, 6, SpringLayout.SOUTH, lblSelectFromThis);
 		springLayout.putConstraint(SpringLayout.WEST, list, 0, SpringLayout.WEST, textField);
@@ -180,7 +186,13 @@ public class Application_Starter_GUI implements ActionListener, ListSelectionLis
 			}
 			for (InetAddress addr : addrList){
 				ipAddresses.addElement(addr.getHostAddress() + "-" + addr.getHostName());
-			}	
+			}
+			try {
+				ipAddresses.removeElement(InetAddress.getLocalHost().getHostAddress()+ "-" + InetAddress.getLocalHost().getHostName());
+			} catch (UnknownHostException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
 		}
 	}
 	
