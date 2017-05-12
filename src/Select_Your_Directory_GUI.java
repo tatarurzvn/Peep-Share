@@ -35,6 +35,9 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 	private int filePort; 
 	
 	private boolean waitForSelection = true;
+	
+	private static boolean dirReady = false;
+	private static boolean fileReady = false;
 
 	/**
 	 * Create the frame.
@@ -70,6 +73,7 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 		btnAccept.setFont(myFont);
 		btnAccept.setBackground(new Color(121, 134, 172));
 		btnAccept.setForeground(new Color(215, 255, 243));
+		btnAccept.setEnabled(false);
 		
 		btnBrowse = new JButton("Browse");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnBrowse, 0, SpringLayout.NORTH, btnAccept);
@@ -89,10 +93,10 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 		lblDirectory.setForeground(new Color(233, 209, 172));
 		
 		lblPathname = new JLabel("Path_Name");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPathname, 33, SpringLayout.SOUTH, lblDirectory);
-		sl_contentPane.putConstraint(SpringLayout.WEST, lblPathname, 15, SpringLayout.WEST, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPathname, -152, SpringLayout.SOUTH, contentPane);
-		sl_contentPane.putConstraint(SpringLayout.EAST, lblPathname, 0, SpringLayout.EAST, lblDirectory);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblPathname, 27, SpringLayout.SOUTH, lblDirectory);
+		sl_contentPane.putConstraint(SpringLayout.WEST, lblPathname, 0, SpringLayout.WEST, lblDirectory);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblPathname, -164, SpringLayout.SOUTH, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblPathname, 34, SpringLayout.EAST, lblDirectory);
 		contentPane.add(lblPathname);
 		lblPathname.setFont(myFont);
 		lblPathname.setForeground(new Color(215, 255, 243));
@@ -105,7 +109,8 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 		lblPendingFile.setForeground(new Color(233, 209, 172));
 		
 		lblFilename = new JLabel("File_Name");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblFilename, 0, SpringLayout.NORTH, lblPathname);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblFilename, 0, SpringLayout.EAST, btnAccept);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblFilename, 26, SpringLayout.SOUTH, lblPendingFile);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblFilename, 0, SpringLayout.WEST, btnBrowse);
 		contentPane.add(lblFilename);
 		lblFilename.setFont(myFont);
@@ -148,6 +153,9 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 						String fileName = input.readLine();
 						
 						lblFilename.setText(fileName);
+						
+						fileReady = true;
+						if(checkEverythingReady()) btnAccept.setEnabled(true);
 					}
 				}
 				if (!wasMessage) {
@@ -173,6 +181,9 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 			if(choice == JFileChooser.APPROVE_OPTION){
 				myFile = fileChooser.getSelectedFile();
 				lblPathname.setText(myFile.getPath());
+				
+				dirReady = true;
+				if(checkEverythingReady()) btnAccept.setEnabled(true);
 			}
 		}
 		if(e.getSource() == btnAccept){
@@ -188,5 +199,10 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 				e1.printStackTrace();
 			}
 		}
+	}
+	
+	public static boolean checkEverythingReady(){
+		
+		return (fileReady && dirReady);
 	}
 }

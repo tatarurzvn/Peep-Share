@@ -69,6 +69,7 @@ public class Select_Your_Files_GUI extends JFrame implements ActionListener {
 		btnSend.setFont(myFont);
 		btnSend.setBackground(new Color(121, 134, 172));
 		btnSend.setForeground(new Color(215, 255, 243));
+		btnSend.setEnabled(false);
 		
 		btnBrowse = new JButton("Browse");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, btnBrowse, 0, SpringLayout.NORTH, btnSend);
@@ -90,24 +91,24 @@ public class Select_Your_Files_GUI extends JFrame implements ActionListener {
 		JLabel lblSize = new JLabel("Size");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblSize, -4, SpringLayout.NORTH, lblFile);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblSize, 0, SpringLayout.WEST, btnBrowse);
-		sl_contentPane.putConstraint(SpringLayout.EAST, lblSize, 198, SpringLayout.EAST, lblFile);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblSize, 0, SpringLayout.EAST, btnBrowse);
 		contentPane.add(lblSize);
 		lblSize.setFont(myFontForHeader);
 		lblSize.setForeground(new Color(233, 209, 172));
 		
 		lblFilename = new JLabel("File_Name");
 		sl_contentPane.putConstraint(SpringLayout.NORTH, lblFilename, 38, SpringLayout.SOUTH, lblFile);
-		sl_contentPane.putConstraint(SpringLayout.WEST, lblFilename, 0, SpringLayout.WEST, lblFile);
+		sl_contentPane.putConstraint(SpringLayout.WEST, lblFilename, 15, SpringLayout.WEST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.SOUTH, lblFilename, 61, SpringLayout.SOUTH, lblFile);
-		sl_contentPane.putConstraint(SpringLayout.EAST, lblFilename, 88, SpringLayout.WEST, lblFile);
 		contentPane.add(lblFilename);
 		lblFilename.setFont(myFont);
 		lblFilename.setForeground(new Color(215, 255, 243));
 		
 		lblFilesize = new JLabel("File_Size");
-		sl_contentPane.putConstraint(SpringLayout.NORTH, lblFilesize, 0, SpringLayout.NORTH, lblFilename);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblFilename, -49, SpringLayout.WEST, lblFilesize);
+		sl_contentPane.putConstraint(SpringLayout.NORTH, lblFilesize, 35, SpringLayout.SOUTH, lblSize);
+		sl_contentPane.putConstraint(SpringLayout.EAST, lblFilesize, -15, SpringLayout.EAST, contentPane);
 		sl_contentPane.putConstraint(SpringLayout.WEST, lblFilesize, 0, SpringLayout.WEST, btnBrowse);
-		sl_contentPane.putConstraint(SpringLayout.EAST, lblFilesize, -111, SpringLayout.EAST, contentPane);
 		contentPane.add(lblFilesize);
 		lblFilesize.setFont(myFont);
 		lblFilesize.setForeground(new Color(215, 255, 243));
@@ -179,6 +180,8 @@ public class Select_Your_Files_GUI extends JFrame implements ActionListener {
 				selectedFile = fileChooser.getSelectedFile();
 				lblFilename.setText(selectedFile.getName());
 				lblFilesize.setText(String.valueOf(selectedFile.length()));
+				
+				btnSend.setEnabled(true);
 			}
 		}
 		if(e.getSource() == btnSend){
