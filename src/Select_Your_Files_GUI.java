@@ -33,8 +33,6 @@ public class Select_Your_Files_GUI extends JFrame implements ActionListener {
 	private int filePort;
 	private String hostname;
 	
-	private boolean waitForSelection = true;
-	
 	/**
 	 * Create the frame.
 	 */
@@ -117,44 +115,78 @@ public class Select_Your_Files_GUI extends JFrame implements ActionListener {
 		btnSend.addActionListener(this);
 		
 		setVisible(true);
-		selectionReadyLoop();
+	}
+
+	public void mainLoop() {
+		int state = 0; 
+		long lastTimeSelectionReady = (long)(System.nanoTime() / 1e6); 
+		while (isVisible()) {
+			selectionReadyLoopBody(state);
+			
+			if (getTimeMilliseconds() - lastTimeSelectionReady > 300) {
+				lastTimeSelectionReady = getTimeMilliseconds();
+				state = (state + 1) % 3;
+			}
+			
+			if (!messageWaitLoopBody()) {	/// only if there is no message should we wait 1ms 
+				try {
+					TimeUnit.MILLISECONDS.sleep(1);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
-	public boolean selectionReadyLoop(){
-		try{
-			while(waitForSelection){
-				lblFilename.setText(".");
-				lblFilesize.setText(".");
-				TimeUnit.MILLISECONDS.sleep(300);
-				lblFilename.setText("..");
-				lblFilesize.setText("..");
-				TimeUnit.MILLISECONDS.sleep(300);
-				lblFilename.setText("...");
-				lblFilesize.setText("...");
-				TimeUnit.MILLISECONDS.sleep(300);
+	private boolean waitForSelection = true;
+	private boolean waitForFileRecv = true; 
+
+	public boolean selectionReadyLoopBody (int state) {
+		if (waitForSelection || waitForFileRecv) {
+			
+			if(state == 0) {
+				if(waitForSelection) 
+					lblFilename.setText(".");
+				
+				if(waitForSelection) 
+					lblFilesize.setText(".");
 			}
-		}catch(InterruptedException e){}
+			else if (state == 1) {
+				if(waitForSelection) 
+					lblFilename.setText("..");
+				
+				if(waitForSelection) 
+					lblFilesize.setText("..");
+			}
+			else if (state == 2) {
+				if(waitForSelection) 
+					lblFilename.setText("...");
+				
+				if(waitForSelection) 
+					lblFilesize.setText("...");
+			}
+		}
 		return true;
 	}
 	
-	public void messageWaitLoop() {
+	public long getTimeMilliseconds(){
+		return (long)(System.nanoTime() / 1e6); 
+	}
+	
+	public boolean messageWaitLoopBody() {
 		boolean wasMessage = false;
 		try{
-			while (isVisible()) {
-				while (wasMessage = input.ready()) {
-					String answer = input.readLine();
-					
-					System.out.println(answer);
-					
-					if (answer.contentEquals("START_SEND_FILE")) {
+			if (wasMessage = input.ready()) {
+				String answer = input.readLine();
+				
+				System.out.println(answer);
+				
+				if (answer.contentEquals("START_SEND_FILE")) {
 
-						FileSender fileSender = new FileSender(selectedFile, hostname, filePort);
-						fileSender.sendFile();
-					}
+					FileSender fileSender = new FileSender(selectedFile, hostname, filePort);
+					fileSender.sendFile();
 				}
-				if (!wasMessage) {
-					TimeUnit.MILLISECONDS.sleep(1);	/// replacer for sleep until input recv  				
-				}	
 			}
 		}
 		catch (IOException e) {
@@ -169,17 +201,19 @@ public class Select_Your_Files_GUI extends JFrame implements ActionListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return wasMessage; 
 	}
 	
 	public void actionPerformed(ActionEvent e){
 		if(e.getSource() == btnBrowse){
-			waitForSelection = false;
 			int choice = fileChooser.showOpenDialog(contentPane);
 			
 			if(choice == JFileChooser.APPROVE_OPTION){
+				waitForSelection = false;
+				
 				selectedFile = fileChooser.getSelectedFile();
 				lblFilename.setText(selectedFile.getName());
-				lblFilesize.setText(String.valueOf(selectedFile.length()));
+				lblFilesize.setText(String.valueOf(selectedFile.length()/1024/1024) + " Mb");
 				
 				btnSend.setEnabled(true);
 			}

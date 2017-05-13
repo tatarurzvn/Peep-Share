@@ -81,7 +81,7 @@ public class ClientConnection extends Thread {
 			        }
 			    });
 			    
-			    frame.messageWaitLoop();
+			    frame.mainLoop();
 			    
 			    t.join();
 	        }
