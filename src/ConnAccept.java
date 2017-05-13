@@ -70,7 +70,7 @@ public class ConnAccept extends Thread {
 
 			    });
 			    
-			    frame.messageWaitLoop();
+			    frame.mainLoop();
 			    
 			    t.join();
 				
