@@ -1,0 +1,30 @@
+Main 
+	start - Application_Starter_GUI
+
+Application_Starter_GUI
+	startThread - ServerAccept
+	startThread - UDPIdentifier
+
+	start AddressFinder 
+
+	if btnConnect 
+		startThread ClientConnection
+
+	if btnRefresh
+		start AddressFinder	
+
+ServerAccept 
+	startThreads - ConnAccept
+
+ConnAccept 
+	start - Accept_pop_up_GUI
+	start - Select_Your_Directory_GUI
+
+ClientConnection
+	start - Select_Your_Files_GUI
+
+Select_Your_Directory_GUI
+	start - fileReceiver (if btnAccept)
+
+Select_Your_Files_GUI
+	start - fileSender (on recv START_SEND_FILE)

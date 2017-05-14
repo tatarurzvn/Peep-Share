@@ -3,6 +3,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/***
+	Class that accepts incoming connections
+	When a connection is established an thread ConnAccept is poped up
+***/
 public class ServerAccept extends Thread {
 	private int port; 
 	private int filePort;
@@ -29,6 +33,7 @@ public class ServerAccept extends Thread {
 				
 				mySocket = MyService.accept();
 				
+				/// ConnAccept will get the socket that is resulted from accepting a socket
 				ConnAccept connThread = new ConnAccept(mySocket, filePort); 
 				connThread.start(); 
 				

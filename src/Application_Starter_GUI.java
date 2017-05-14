@@ -23,31 +23,44 @@ public class Application_Starter_GUI implements ActionListener, ListSelectionLis
 	private JFrame frmPeepShare;
 	private JTextField textField;
 	private JButton btnConnect;
-	private int port; 
-	private int filePort;
-	private UDPIdentifier identify; 
-	private ServerAccept server; 
-	private ArrayList<ClientConnection> connectionList; 
 	private JLabel lblRequestStatus;
 	private JLabel lblSelectFromThis;
 	private JList<String> list;
-	private DefaultListModel<String> ipAddresses;
-	private ArrayList<InetAddress> addrList;
-	private AddressFinder addrFind;
 	private JButton btnRefresh;
+
+	private int port; 
+	private int filePort;
+
+	/// those are all about the UDP - User Datagram Protocol, we should also use 2 other ports for this one
+	/// we are using 2233 and 4455
+	private UDPIdentifier identify;								/// this one listens for messages and responds   
+	private AddressFinder addrFind;								/// this one sends messages and listens for the response
+	private ArrayList<InetAddress> addrList;
+	private DefaultListModel<String> ipAddresses;	// here?
+
+	/// this is only the server and the conections that it makes 
+	private ServerAccept server; 
+	private ArrayList<ClientConnection> connectionList; 
+	
+	/// UDP and TCP are mostly separated in this program
+	/// ClientConnection, ServerAccept and ConnAccept are the 3 of the 4 threads, the 4th thread is the UDP one
 
 	/**
 	 * Create the application.
 	 */
 	public Application_Starter_GUI() {
+		
+		/// ports for TCP connections 
 		port = 4546;
 		filePort = 4547;
-		
+	
 		connectionList = new ArrayList<ClientConnection>(); 
 		
+		/// this is here for those who want to see our presence 
 		identify = new UDPIdentifier(2233, "myName");
 		identify.start();
 		
+		/// this thread waits for new connections 
 		server = new ServerAccept(port, filePort); 
 		server.start(); 
 		
@@ -167,8 +180,9 @@ public class Application_Starter_GUI implements ActionListener, ListSelectionLis
 			//check the value before sending
 			//new Accept_pop_up_GUI();
 			
+			/// here we will try to connect to the other app
 			ClientConnection testConn = new ClientConnection(textField.getText(), port, filePort);
-			testConn.setResponseLabel(lblRequestStatus);
+			testConn.setResponseLabel(lblRequestStatus);	/// this label here is for status, this is the response from the connection
 			testConn.start();
 			
 			lblRequestStatus.setText("Request sent");

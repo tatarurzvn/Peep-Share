@@ -7,6 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
+/***
+	The result of the ServerAccept accepting a new connection from a ClientConnection
+***/
 public class ConnAccept extends Thread {
 	Socket connectionSocket; 
 	int filePort; 
@@ -31,6 +34,11 @@ public class ConnAccept extends Thread {
 			if(acceptGUI.isAccepted()){
 				acceptGUI.close();
 				
+				/// socket was given by ServerAccept here as a result of accepting a connection from ClientConnection
+				/// as oposed to ClientConnection where we had to make a new socket(see ClientConnection)
+
+				/// those two will write(output) to the internet and read(input) from the internet
+				/// so we will give them to any class that wants to read/write to the other computer 
 				PrintWriter output = 
 						new PrintWriter(connectionSocket.getOutputStream(), true);
 				BufferedReader input = 
@@ -43,6 +51,8 @@ public class ConnAccept extends Thread {
 				Object lock = new Object();
 				Select_Your_Directory_GUI frame = new Select_Your_Directory_GUI(output, input, filePort);
 				
+				/// this thread's only purpose is to not end the instance of ClientConnection while the frame is visible as it will result in 
+	     		/// frame is visible as it will result in closing the connection 
 				Thread t = new Thread() {
 			        public void run() {
 			            synchronized(lock) {
@@ -70,6 +80,7 @@ public class ConnAccept extends Thread {
 
 			    });
 			    
+			    /// the main loop waits for messages from the other computer
 			    frame.mainLoop();
 			    
 			    t.join();

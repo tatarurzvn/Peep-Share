@@ -7,6 +7,10 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import javax.swing.JLabel;
 
+/***
+	Will try to connect to ServerAccept, it is meant to be a new thread as the client connection will 
+	start mainLoop of the class Select_Your_Files_GUI
+***/
 public class ClientConnection extends Thread {
 	String hostname; 
 	int port; 
@@ -32,17 +36,18 @@ public class ClientConnection extends Thread {
 		/// start gui here
 		
 		try{	
+			/// this one is the preparation for the connection and the connection to hostname:port, 2 in 1 
 			Socket mySocket = new Socket(hostname, port); 
 			
+			/// those two will write(output) to the internet and read(input) from the internet
+			/// so we will give them to any class that wants to read/write to the other computer 
 			PrintWriter output = 
 					new PrintWriter(mySocket.getOutputStream(), true);
 			
 			BufferedReader input = 
 					new BufferedReader( new InputStreamReader(mySocket.getInputStream()));
 	    		
-			/// get accepted connection 
-			/// if acc -> 
-			
+	    	/// we first get a string telling us if the other computer accepted our connection
 	        String answer = input.readLine(); 
 	        System.out.println(answer);       
 	        
@@ -52,9 +57,11 @@ public class ClientConnection extends Thread {
 	        	Object lock = new Object();
 	        	Select_Your_Files_GUI frame = new Select_Your_Files_GUI(output, input, hostname, filePort);
 	        	
-	        	/// conn acc here
+	        	/// conn accepted here
 	        	System.out.println("Connection has been started");
 	     
+	     		/// this thread's only purpose is to not end the instance of ClientConnection while the frame is visible as it will result in 
+	     		/// frame is visible as it will result in closing the connection 
 	        	Thread t = new Thread() {
 			        public void run() {
 			            synchronized(lock) {
@@ -81,6 +88,7 @@ public class ClientConnection extends Thread {
 			        }
 			    });
 			    
+			    /// the main loop waits for messages from the other computer
 			    frame.mainLoop();
 			    
 			    t.join();
