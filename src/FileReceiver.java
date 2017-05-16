@@ -21,6 +21,9 @@ public class FileReceiver {
 			
 			// accepting  
 			mySocket = MyService.accept();
+
+			MyService.close();	/// Not tested, should work like this 
+								/// I dont have a java compiler to try it out 
 			
 			InputStream inputStream = mySocket.getInputStream();
 			
@@ -62,7 +65,7 @@ public class FileReceiver {
 		    bufferedOutputStream.flush();
 		    
 		    bufferedOutputStream.close();
-		    MyService.close();
+		    /// MyService.close(); this was here
 		} 
 		catch (IOException e) {
 			// TODO Auto-generated catch block

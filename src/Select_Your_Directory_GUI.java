@@ -185,6 +185,7 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 				
 				System.out.println(answer);
 				
+				/// here we recv the file name
 				if (answer.contentEquals("SEND_FILE")){
 					waitForFileRecv = false;
 					
@@ -221,7 +222,7 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 			}
 		}
 		if(e.getSource() == btnAccept){
-			output.println("START_SEND_FILE");
+			output.println("START_SEND_FILE");	/// we send the accept to send us this file
 			
 			FileReceiver fileRecv = new FileReceiver(lblPathname.getText() + "\\" + lblFilename.getText()
 					, filePort);
