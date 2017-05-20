@@ -227,7 +227,7 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 			FileReceiver fileRecv = new FileReceiver(lblPathname.getText() + "\\" + lblFilename.getText()
 					, filePort);
 			try {
-				fileRecv.receiveFile();
+				fileRecv.run();
 			} 
 			catch (Exception e1) {
 				// TODO Auto-generated catch block
