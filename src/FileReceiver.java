@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class FileReceiver {
+public class FileReceiver extends Thread{
 	String fileName; 
 	private int port;
 	
@@ -14,7 +14,7 @@ public class FileReceiver {
 		this.port = port;
 	}
 	
-	public void receiveFile() throws Exception{
+	public void run(){
 		try {
 			Socket mySocket;
 			ServerSocket MyService = new ServerSocket(port);
@@ -58,7 +58,12 @@ public class FileReceiver {
 		    if (curentTotal != fileSize) {
 		    	bufferedOutputStream.close();
 		    	MyService.close();
-		    	throw new Exception("Files do not match size");
+		    	try {
+					throw new Exception("Files do not match size");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 		    }
 		    
 		    bufferedOutputStream.write(data, 0, curentTotal);
