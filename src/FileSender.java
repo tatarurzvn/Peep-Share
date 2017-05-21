@@ -12,6 +12,8 @@ public class FileSender {
 	private int port; 
 	private String hostname;
 	
+	private int memoryPatchSize = 128 * 1024 * 1024;
+	
 	FileSender (File file, String hostname, int port) {
 		this.port = port;
 		this.hostname = hostname;
@@ -26,27 +28,33 @@ public class FileSender {
 			FileInputStream fin = new FileInputStream(file);
 		    BufferedInputStream bufferedInputStream = new BufferedInputStream(fin);
 			
-		    System.out.println((1 << 30));
-		    if (file.length() > (1 << 30)) {
-		    	mySocket.close();
-			    bufferedInputStream.close();
-		    	throw new Exception("Program broke, something with the file");
+		    long fileSize = file.length();
+		    long dataSent = 0; 
+		    
+		    int dataAllocSize = 0;
+		    
+		    if (fileSize > (long)memoryPatchSize) {
+		    	dataAllocSize = (int)memoryPatchSize;
+		    }
+		    else {
+		    	dataAllocSize = (int)fileSize;
+		    }
+		    byte [] data = new byte[dataAllocSize];
+		    	
+		    OutputStream outputStream = mySocket.getOutputStream();
+			
+		    for (int i = 0; i < Long.SIZE; i++) {
+		    	outputStream.write((int)(fileSize >> (i * 8)));
 		    }
 		    
-		    byte [] data = new byte[(int)file.length()];
-		    bufferedInputStream.read(data, 0,  data.length);
-		    
-		    OutputStream outputStream = mySocket.getOutputStream();
-		   
-		    int fileSize = (int)file.length();
-		    
-		    outputStream.write(fileSize);
-		    outputStream.write(fileSize >> 8);
-		    outputStream.write(fileSize >> 16);
-		    outputStream.write(fileSize >> 24);
-		    
-		    outputStream.write(data, 0, data.length);
-		    outputStream.flush();
+		    while (dataSent != fileSize) {
+		    	int dataRead = bufferedInputStream.read(data, 0,  data.length);
+		    	
+		    	dataSent += (long)dataRead;
+		    	
+		    	outputStream.write(data, 0, dataRead);
+			    outputStream.flush();
+		    } 		    
 		    
 		    mySocket.close();
 		    bufferedInputStream.close();

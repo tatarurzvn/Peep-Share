@@ -18,8 +18,11 @@ public class UDPIdentifier extends Thread{
 			DatagramSocket listener = new DatagramSocket(port);
 			listener.setBroadcast(true);
 			
-			byte [] buffer = new byte[1]; 
-			DatagramPacket packet = new DatagramPacket(buffer, 1);
+			byte [] buffer = new byte[2]; 
+			buffer[0] = 121;
+			buffer[1] = -121;
+			
+			DatagramPacket packet = new DatagramPacket(buffer, 2);
 			
 			while( alive ){
 				listener.receive(packet);

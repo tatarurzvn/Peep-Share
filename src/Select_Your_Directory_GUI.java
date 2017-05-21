@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SpringLayout;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JProgressBar;
 
 public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 
@@ -28,6 +29,7 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 	private File myFile;
 	private JLabel lblPendingFile;
 	private JLabel lblFilename;
+	private JProgressBar progressBar;
 	
 	private PrintWriter output; 
 	private BufferedReader input;
@@ -36,6 +38,8 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 	
 	private static boolean dirReady = false;
 	private static boolean fileReady = false;
+	
+	private FileReceiver fileRecv; 
 
 	/**
 	 * Create the frame.
@@ -113,6 +117,15 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 		contentPane.add(lblFilename);
 		lblFilename.setFont(myFont);
 		lblFilename.setForeground(new Color(215, 255, 243));
+		
+		progressBar = new JProgressBar();
+		sl_contentPane.putConstraint(SpringLayout.NORTH, progressBar, -45, SpringLayout.NORTH, btnBrowse);
+		sl_contentPane.putConstraint(SpringLayout.WEST, progressBar, -287, SpringLayout.EAST, contentPane);
+		sl_contentPane.putConstraint(SpringLayout.SOUTH, progressBar, -31, SpringLayout.NORTH, btnBrowse);
+		sl_contentPane.putConstraint(SpringLayout.EAST, progressBar, -141, SpringLayout.EAST, contentPane);
+		contentPane.add(progressBar);
+		progressBar.setVisible(false);
+		progressBar.setIndeterminate(true);
 		
 		btnBrowse.addActionListener(this);
 		btnAccept.addActionListener(this);
@@ -224,10 +237,11 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 		if(e.getSource() == btnAccept){
 			output.println("START_SEND_FILE");	/// we send the accept to send us this file
 			
-			FileReceiver fileRecv = new FileReceiver(lblPathname.getText() + "\\" + lblFilename.getText()
-					, filePort);
+			fileRecv = new FileReceiver(lblPathname.getText() + "\\" + lblFilename.getText()
+					, filePort, progressBar);
+			
 			try {
-				fileRecv.run();
+				fileRecv.start();
 			} 
 			catch (Exception e1) {
 				// TODO Auto-generated catch block
@@ -237,7 +251,6 @@ public class Select_Your_Directory_GUI extends JFrame implements ActionListener{
 	}
 	
 	public static boolean checkEverythingReady(){
-		
 		return (fileReady && dirReady);
-	}
+	}	
 }

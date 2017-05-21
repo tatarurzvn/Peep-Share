@@ -5,17 +5,24 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import javax.swing.JProgressBar;
+
 public class FileReceiver extends Thread{
 	String fileName; 
 	private int port;
+	private JProgressBar progressBar;
+	private int memoryPatchSize = 128 * 1024 * 1024;
 	
-	public FileReceiver (String fileName, int port) {
+	public FileReceiver (String fileName, int port, JProgressBar progressBar) {
 		this.fileName = fileName;
 		this.port = port;
+		this.progressBar = progressBar;
 	}
 	
 	public void run(){
 		try {
+			progressBar.setVisible(true);
+			
 			Socket mySocket;
 			ServerSocket MyService = new ServerSocket(port);
 			
@@ -27,37 +34,45 @@ public class FileReceiver extends Thread{
 			
 			InputStream inputStream = mySocket.getInputStream();
 			
-			int fileSize = 0;
+			long fileSize = 0;
 			
-			int byteSize = inputStream.read();
-			fileSize = fileSize | byteSize;
+			long byteSize = 0; 
+			for (int i = 0; i < Long.SIZE; i++) {
+				byteSize = (int)inputStream.read();
+				fileSize = fileSize | (byteSize << (i * 8));
+			}
 			
-			byteSize = inputStream.read();
-			fileSize = fileSize | (byteSize << 8);
-			
-			byteSize = inputStream.read();
-			fileSize = fileSize | (byteSize << 16);
-			
-			byteSize = inputStream.read();
-			fileSize = fileSize | (byteSize << 24);
-			
-			byte [] data = new byte [fileSize];
+			int dataAllocSize = 0;
+		    
+		    if (fileSize > (long)memoryPatchSize) {
+		    	dataAllocSize = (int)memoryPatchSize;
+		    }
+		    else {
+		    	dataAllocSize = (int)fileSize;
+		    }
+		    byte [] data = new byte[dataAllocSize];
 			
 			FileOutputStream fos = new FileOutputStream(fileName);
 		    BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fos);
 		   
 		    int bytesRead = 0;
-		    int curentTotal = 0; 
+		    long curentTotal = 0; 
 		    
-		    while ((bytesRead = inputStream.read(data, curentTotal, fileSize - curentTotal)) > 0) {
-		    	curentTotal += bytesRead; 
+		    System.out.println(data.length + " data.lenght");
+		    System.out.println(data.length + " data.lenght");
+		    System.out.println(fileSize+ " fileSize");
+		    
+		    while ((bytesRead = inputStream.read(data, 0, data.length)) > 0) {
+		    	curentTotal += (long)bytesRead; 
+		    	
+			    bufferedOutputStream.write(data, 0, bytesRead);
+			    bufferedOutputStream.flush();
 		    }			
 		    
 		    mySocket.close();
+		    bufferedOutputStream.close();
 		    
 		    if (curentTotal != fileSize) {
-		    	bufferedOutputStream.close();
-		    	MyService.close();
 		    	try {
 					throw new Exception("Files do not match size");
 				} catch (Exception e) {
@@ -66,13 +81,12 @@ public class FileReceiver extends Thread{
 				}
 		    }
 		    
-		    bufferedOutputStream.write(data, 0, curentTotal);
-		    bufferedOutputStream.flush();
-		    
-		    bufferedOutputStream.close();
-		    /// MyService.close(); this was here
+		    progressBar.setVisible(false);
 		} 
 		catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

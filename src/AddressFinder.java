@@ -15,8 +15,8 @@ public class AddressFinder {
 			sender.setBroadcast(true);
 			sender.setSoTimeout(waitTimeMiliseconds / 2);
 			
-			byte [] buffer = new byte[1]; 
-			DatagramPacket packet = new DatagramPacket(buffer, 1
+			byte [] buffer = new byte[2]; 
+			DatagramPacket packet = new DatagramPacket(buffer, 2
 					, InetAddress.getByName("255.255.255.255"), port);
 			
 			sender.send(packet);
@@ -26,7 +26,9 @@ public class AddressFinder {
 				DatagramPacket recvPacket = new DatagramPacket(buffer, 1); 
 				
 				sender.receive(recvPacket);
-				addrArray.add(recvPacket.getAddress()); 
+				
+				if (buffer[0] == 121 && buffer[1] == -121)
+					addrArray.add(recvPacket.getAddress()); 
 			}
 			
 			sender.close(); 
